@@ -8,16 +8,18 @@ public class SpawnManager : MonoBehaviour
     private List<GameObject> prefabs;
     private float xSpawnRange = 13;
     private float zSpawn = 150;
+    private GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         StartCoroutine(ContinuousSpawn());
     }
 
 
     IEnumerator ContinuousSpawn()
     {
-        while (true)
+        while (gameManager.isGameActive)
         {
             yield return new WaitForSeconds(2);
             SpawnObject();

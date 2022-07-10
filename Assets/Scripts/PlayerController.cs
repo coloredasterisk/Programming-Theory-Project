@@ -7,10 +7,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float speed = 10.0f;
     private float xRange = 14;
+    private GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
@@ -18,7 +19,7 @@ public class PlayerController : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float futurePosition = transform.position.x + (horizontalInput * Time.deltaTime * speed);
-        if(Mathf.Abs(futurePosition) < xRange)
+        if (Mathf.Abs(futurePosition) < xRange && gameManager.isGameActive) 
         {
             transform.position = new Vector3(futurePosition, 2, -10);
         }
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Vehicle"))
         {
+            gameManager.EndGame();
             Destroy(other.gameObject);
             StartCoroutine(DestroyObject(other.gameObject));
         }
