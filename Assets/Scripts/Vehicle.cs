@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Vehicle : MonoBehaviour
+public abstract class Vehicle : MonoBehaviour
 {
-
-    public static float yBound { get; } = -5;
-    public static float zBound { get; } = -11;
+    public float xSpawnRange { get; protected set; } = 13;
+    protected float yBound = -5;
+    protected float zBound = -11;
     private Rigidbody vehicleBody;
-    public float speed = 40;
-    private int scoreValue = 1;
+    protected float speed;
+    protected int scoreValue;
     private GameManager gameManager;
 
     void Start()
     {
+        SetValue();
         vehicleBody = GetComponent<Rigidbody>();
         vehicleBody.AddRelativeForce(Vector3.forward * speed, ForceMode.Impulse);
         gameManager = FindObjectOfType<GameManager>();
     }
-
+    // ABSTRACTION
+    protected abstract void SetValue();
 
     // Update is called once per frame
     void Update()
@@ -31,13 +33,9 @@ public class Vehicle : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    // ABSTRACTION
     protected virtual void Move()
     {
         vehicleBody.AddRelativeForce(Vector3.forward * speed);
-        Vector3 position = GameObject.Find("Player").transform.position;
-        position.y = transform.position.y;
-        transform.LookAt(position);
-
     }
 }

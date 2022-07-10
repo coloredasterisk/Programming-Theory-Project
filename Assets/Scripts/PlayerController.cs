@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
     private float speed = 10.0f;
     private float xRange = 14;
     private GameManager gameManager;
@@ -17,12 +16,20 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+             speed = 20.0f;
+        } else if (Input.GetKeyUp(KeyCode.DownArrow))
+        {
+            speed = 10.0f;
+        }
         float horizontalInput = Input.GetAxis("Horizontal");
         float futurePosition = transform.position.x + (horizontalInput * Time.deltaTime * speed);
         if (Mathf.Abs(futurePosition) < xRange && gameManager.isGameActive) 
         {
             transform.position = new Vector3(futurePosition, 2, -10);
         }
+        
     }
     
     private void OnCollisionEnter(Collision other)

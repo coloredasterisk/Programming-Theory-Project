@@ -6,9 +6,9 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
     private List<GameObject> prefabs;
-    private float xSpawnRange = 13;
     private float zSpawn = 150;
     private GameManager gameManager;
+    private float spawnInterval = 2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,19 +21,40 @@ public class SpawnManager : MonoBehaviour
     {
         while (gameManager.isGameActive)
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(spawnInterval);
             SpawnObject();
         }
         
     }
 
-    Vector3 RandomSpawnPosition()
+    Vector3 RandomSpawnPosition(GameObject prefabObject)
     {
-        return new Vector3(Random.Range(-xSpawnRange, xSpawnRange), 0.76f, zSpawn);
+        float range = prefabObject.GetComponent<Vehicle>().xSpawnRange;
+        return new Vector3(Random.Range(-range, range), 0.76f, zSpawn);
     }
-    GameObject SpawnObject()
+    void SpawnObject()
     {
+        spawnInterval -= 0.01f;
+        if(spawnInterval < 1)
+        {
+            spawnInterval = 1;
+        }
         int randomIndex = Random.Range(0, prefabs.Count);
-        return Instantiate(prefabs[randomIndex], RandomSpawnPosition(), prefabs[randomIndex].transform.rotation);
+        GameObject spawnObject = prefabs[randomIndex];
+        if (spawnObject.name.Equals("Bus") || spawnObject.name.Equals("Van"))
+        {
+            MakeObject(spawnObject);
+            MakeObject(spawnObject);
+            MakeObject(spawnObject);
+        } else if(spawnObject.name.Equals("Car") || spawnObject.name.Equals("Truck"))
+        {
+            MakeObject(spawnObject);
+        }
+        MakeObject(spawnObject);
+    }
+
+    void MakeObject(GameObject newObject)
+    {
+        Instantiate(newObject, RandomSpawnPosition(newObject), newObject.transform.rotation);
     }
 }
